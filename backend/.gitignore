@@ -3,3 +3,5 @@ env
 pylintrc
 pip
 node_modules
+set
+requirements.txt

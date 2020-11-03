@@ -5,6 +5,7 @@ from flask_cors import CORS
 import random
 
 from models import setup_db, Question, Category
+
 # import sys
 # sys.path.insert(0, './models')
 
