@@ -5,28 +5,45 @@ from flask_cors import CORS
 import random
 
 from models import setup_db, Question, Category
+# import sys
+# sys.path.insert(0, './models')
 
 QUESTIONS_PER_PAGE = 10
 
 def create_app(test_config=None):
-  # create and configure the app
+  #create and configure the app
   app = Flask(__name__)
   setup_db(app)
-  
+
   '''
   @TODO: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
   '''
+  #CORS(app)
+  CORS(app, resources={r'/api/*': {'origins': '*'}})
 
   '''
   @TODO: Use the after_request decorator to set Access-Control-Allow
   '''
+  @app.after_request
+  def after_request(response):
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+    return response
 
   '''
   @TODO: 
-  Create an endpoint to handle GET requests 
+  Create an endpoint to handle GET requests
   for all available categories.
   '''
-
+  @app.route('/categories')
+  def get_categories():
+    categories = Category.query.order_by(Category.type).all()
+    if le(catergories) == 0:
+      abort(404)
+      return jsonify({
+        'success': True,
+        'categories': {category.id: category.type for category in categories}
+      })
 
   '''
   @TODO: 
@@ -40,6 +57,22 @@ def create_app(test_config=None):
   ten questions per page and pagination at the bottom of the screen for three pages.
   Clicking on the page numbers should update the questions. 
   '''
+  @app.route('/questions')
+  def get_questions():
+    page = request.args.get('page', 1, type=int)
+    start = (page -1) * QUESTIONS_PER_PAGE
+    end = start + QUESTIONS_PER_PAGE
+    questions = Question.query.order_by(Question.id).all()
+    formatted_questions = [question.format() for question in questions]
+
+    return jsonify({
+      'success ': true,
+      'questions': formatted_questions[start:end],
+      'total_questions': len(questions),
+      'categories': {category.id: category.type for category in categories},
+      'current_category': None
+    })
+
 
   '''
   @TODO: 
@@ -100,5 +133,11 @@ def create_app(test_config=None):
   '''
   
   return app
+  create_app().run(debug=True)
 
+# return app
+# def __name__ == '__main__':
+#     create_app().run()
+
+  
     
