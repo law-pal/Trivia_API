@@ -39,9 +39,11 @@ def create_app(test_config=None):
   @app.route('/categories')
   def get_categories():
     categories = Category.query.order_by(Category.type).all()
-    if le(catergories) == 0:
+
+    if len(categories) == 0:
       abort(404)
-      return jsonify({
+
+    return jsonify({
         'success': True,
         'categories': {category.id: category.type for category in categories}
       })
@@ -65,9 +67,13 @@ def create_app(test_config=None):
     end = start + QUESTIONS_PER_PAGE
     questions = Question.query.order_by(Question.id).all()
     formatted_questions = [question.format() for question in questions]
+    categories = Category.query.order_by(Category.type).all()
+
+    if len(formatted_questions) == 0:
+            abort(404)
 
     return jsonify({
-      'success ': true,
+      'success ': True,
       'questions': formatted_questions[start:end],
       'total_questions': len(questions),
       'categories': {category.id: category.type for category in categories},
