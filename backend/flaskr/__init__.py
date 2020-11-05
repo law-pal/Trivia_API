@@ -88,6 +88,18 @@ def create_app(test_config=None):
   TEST: When you click the trash icon next to a question, the question will be removed.
   This removal will persist in the database and when you refresh the page. 
   '''
+  @app.route('/questions/<int:question_id>', methods=['DELETE'])
+  def delete_question(question_id):
+    question = Question.query.get(question_id)
+    question.delete()
+
+    return jsonify({
+      'response': True,
+      'deleted': question_id
+    })
+
+    if error:
+      abort(422)
 
   '''
   @TODO: 
@@ -99,6 +111,25 @@ def create_app(test_config=None):
   the form will clear and the question will appear at the end of the last page
   of the questions list in the "List" tab.  
   '''
+  @app.route('/questions', methods=['POST'])
+  def create_question():
+    body = request.get_json()
+    created_question = body.get('question')
+    created_answer = body.get('answer')
+    created_category = body.get('category')
+    created_difficulty = body.get('difficulty')
+
+    question = Question(question=created_question, answer=created_answer, category=created_category, difficulty=created_difficulty)
+    question.insert()
+
+    return jsonify({
+      'response': True,
+      'created': question.id
+    })
+
+    if error:
+      abort(422)
+
 
   '''
   @TODO: 
@@ -110,6 +141,23 @@ def create_app(test_config=None):
   only question that include that string within their question. 
   Try using the word "title" to start. 
   '''
+  @app.route('/questions/search', methods=['POST'])
+  def search_question():
+    try:
+      body = request.get_json()
+      search_term = body.get('searchTerm', None)
+      if search_term:
+        results = Question.query.filter(Question.question.ilike(f'%{search_term}%')).all()
+        formatted_questions = [question.format() for question in results]
+
+        return jsonify({
+          'success': True,
+          'questions': formatted_questions,
+          'total_questions': len(results),
+          'current_category': None
+        })
+    except:
+      abort(404)
 
   '''
   @TODO: 
@@ -119,6 +167,22 @@ def create_app(test_config=None):
   categories in the left column will cause only questions of that 
   category to be shown. 
   '''
+  @app.route('/categories/<int:category_id>/questions', methods=['GET'])
+  def get_by_category(category_id):
+
+    try:
+      questions = Question.query.filter(Question.category == str(category_id)).all()
+      formatted_questions = [question.format() for question in questions]
+
+      return jsonify({
+        'response': True,
+        'questions': formatted_questions,
+        'total_questions': len(questions),
+        'current_category': category_id
+      })
+
+    except:
+      abort(404)
 
 
   '''
