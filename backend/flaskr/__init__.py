@@ -6,13 +6,9 @@ import random
 
 from models import setup_db, Question, Category
 
-# import sys
-# sys.path.insert(0, './models')
-
 QUESTIONS_PER_PAGE = 10
 
 def create_app(test_config=None):
-  #create and configure the app
   app = Flask(__name__)
   setup_db(app)
 
@@ -228,6 +224,42 @@ def create_app(test_config=None):
   Create error handlers for all expected errors 
   including 404 and 422. 
   '''
+  @app.errorhandler(404)
+  def not_found(error):
+    return jsonify({
+      'success': False,
+      'error': 404,
+      'message': 'Not Found'
+    }), 404
+
+  @app.errorhandler(422)
+  def unprocessable(error):
+    return jsonify({
+      'success': False,
+      'error': 422,
+      'message': 'Unprocessable'
+    }), 422
+
+  @app.errorhandler(400)
+  def bad_request(error):
+    return jsonify({
+      'success': False,
+      'error': 400,
+      'message': 'bad request'
+    }), 400
+
+  @app.errorhandler(405)
+  def method_not_allowed(error):
+    return jsonify({
+      'success': False,
+      'error': 405,
+      'message': 'Method Not Allowed'
+    }), 405
+
+
+    
+
+
   
   return app
   create_app().run(debug=True)
