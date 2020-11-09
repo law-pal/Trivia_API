@@ -67,11 +67,11 @@ One note before you delve into your tasks: for each endpoint you are expected to
 9. Create error handlers for all expected errors including 400, 404, 422 and 500. 
 
 
-API
-Endpoints
+# API
+# Endpoints
 GET '/categories' Fetches all available categories.
-# Request parameters: none
-# Example response:
+ Request parameters: none
+ Example response:
 {
   "categories": {
     "1": "Science", 
@@ -116,7 +116,7 @@ total_questions: 2
 }
 
 POST /questions Add a new questions to the repository of available questions.
-# Request body: {question:string, answer:string, difficulty:int, category:string}
+ Request body: {question:string, answer:string, difficulty:int, category:string}
 
 Example response:
 {
@@ -125,7 +125,7 @@ Example response:
 }
 
 DELETE Delete an existing question from the repository of available questions.
-# Request arguments: question_id:int
+ Request arguments: question_id:int
 Example response:
 {
   "deleted": "21", 
@@ -133,7 +133,7 @@ Example response:
 }
 
 POST /questions/search Fetches all questions where a substring matches the search term (not case-sensitive)
-# Request body: {searchTerm:string}
+ Request body: {searchTerm:string}
 Example response:
 {
   "current_category": null, 
@@ -163,7 +163,7 @@ GET '/categories'
 '6' : "Sports"}
 
 GET /categories/<int:category_id>/questions Fetches a dictionary of questions for the specified category
-# Request argument: category_id:int
+ Request argument: category_id:int
 Example response:
 {
    current_category: 2,
@@ -188,8 +188,8 @@ Example response:
 }
 
 POST /quizzes Fetches one random question within a specified category. Previously asked questions are not asked again.
-# Request body: {previous_questions: arr, quiz_category: {id:int, type:string}}
-# Example response:
+ Request body: {previous_questions: arr, quiz_category: {id:int, type:string}}
+ Example response:
 {
   "question": {
     "answer": "The Liver", 
