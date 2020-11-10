@@ -15,7 +15,6 @@ class TriviaTestCase(unittest.TestCase):
         self.app = create_app()
         self.client = self.app.test_client
         self.database_name = "trivia_test"
-        #self.database_path = "postgres://{}/{}".format('localhost:5432', self.database_name)
         self.database_path =  "postgresql+psycopg2://{}:{}@{}/{}".format(DB_USER, DB_PASSWORD, DB_HOST, DB_NAME)
         setup_db(self.app, self.database_path)
 
@@ -128,6 +127,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'Unprocessable')
 
+    #test for searching questions and error 404 = OK
     def test_search_term(self):
         test_search = {'searchTerm': 'p'}
         res = self.client().post('/questions/search', json=test_search)
@@ -147,6 +147,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'Not Found')
 
+    #test to get questions by category and error 404 = OK 
     def test_get_questions_by_category(self):
         res = self.client().get('/categories/1/questions')
         data = json.loads(res.data)
@@ -165,6 +166,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'Not Found')
 
+    #test for quizzes and error 422 =OK
     def test_get_quiz_questions(self):
         test_quiz = {'previous_questions':[],'quiz_category':{'type':'Sports','id': 6}}
         res = self.client().post('/quizzes', json=test_quiz)
