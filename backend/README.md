@@ -88,32 +88,32 @@ GET '/categories' Fetches all available categories.
 GET /questions?page=<page_number> Fetches a paginated dictionary of question of all available categories.
 {
 categories: {
-1: "Science",
-2: "Art",
-3: "Geography",
-4: "History",
-5: "Entertainment",
-6: "Sports"
+   1: "Science",
+   2: "Art",
+   3: "Geography",
+   4: "History",
+   5: "Entertainment",
+   6: "Sports"
 },
 current_category: null,
 questions: [
 {
-answer: "Agra",
-category: 3,
-difficulty: 2,
-id: 15,
-question: "The Taj Mahal is located in which Indian city?"
+   answer: "Agra",
+   category: 3,
+   difficulty: 2,
+   id: 15,
+   question: "The Taj Mahal is located in which Indian city?"
 },
 {
-answer: "Escher",
-category: 2,
-difficulty: 1,
-id: 16,
-question: "Which Dutch graphic artist–initials M C was a creator of optical illusions?"
+   answer: "Escher",
+   category: 2,
+   difficulty: 1,
+   id: 16,
+   question: "Which Dutch graphic artist–initials M C was a creator of optical illusions?"
 },
 ]
-success : true,
-total_questions: 2
+   success : true,
+   total_questions: 2
 }
 
 POST /questions Add a new questions to the repository of available questions.
@@ -139,14 +139,14 @@ POST /questions/search Fetches all questions where a substring matches the searc
 {
   "current_category": null, 
   "questions": [
-   {
+{
    answer: "Agra",
    category: 3,
    difficulty: 2,
    id: 15,
    question: "The Taj Mahal is located in which Indian city?"
-   }
-   ], 
+}
+], 
   "success": true, 
   "total_questions": 1
 }
@@ -156,37 +156,39 @@ GET '/categories'
 - Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
 - Request Arguments: None
 - Returns: An object with a single key, categories, that contains a object of id: category_string key:value pairs. 
-{'1' : "Science",
-'2' : "Art",
-'3' : "Geography",
-'4' : "History",
-'5' : "Entertainment",
-'6' : "Sports"}
+{
+   '1' : "Science",
+   '2' : "Art",
+   '3' : "Geography",
+   '4' : "History",
+   '5' : "Entertainment",
+   '6' : "Sports"
+}
 
 GET /categories/<int:category_id>/questions Fetches a dictionary of questions for the specified category
 
 Request argument: category_id:int
 Example response:
 {
-current_category: 2,
-questions: [
+   current_category: 2,
+   questions: [
 {
-answer: "Escher",
-category: 2,
-difficulty: 1,
-id: 16,
-question: "Which Dutch graphic artist–initials M C was a creator of optical illusions?"
+   answer: "Escher",
+   category: 2,
+   difficulty: 1,
+   id: 16,
+   question: "Which Dutch graphic artist–initials M C was a creator of optical illusions?"
 },
 {
-answer: "Mona Lisa",
-category: 2,
-difficulty: 3,
-id: 17,
-question: "La Giaconda is better known as what?"
+   answer: "Mona Lisa",
+   category: 2,
+   difficulty: 3,
+   id: 17,
+   question: "La Giaconda is better known as what?"
 }
 ],
-response: true,
-total_questions: 2
+   response: true,
+   total_questions: 2
 }
 
 ```
