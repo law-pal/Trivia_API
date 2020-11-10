@@ -93,8 +93,59 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'Unprocessable')
 
+    # test for create a new question and error 422
+    def test_create_new_question(self):
+        test_question = {
+            'question': 'test question',
+            'answer': 'test answer',
+            'difficulty': 1,
+            'category': 1 
+        }
+        #test for question before
+        questions_before = Question.query.all()
+        res = self.client().post('/questions', json=test_question)
+        data = json.loads(res.data)
+        #test for questions after
+        questions_after = Question.query.all()
 
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        #test for length of questions before and after
+        self.assertTrue(len(questions_after) - len(questions_before) == 1)
 
+    #test error 422
+    def test_unprocessable_create_question(self):
+        test_question = {
+            'question': 'test question',
+            'answer': 'test answer',
+            'difficulty': 1
+        }
+
+        res = self.client().post('questions', json=test_question)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 422)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'Unprocessable')
+
+    def test_search_term(self):
+        test_search = {'searchTerm': 'p'}
+        res = self.client().post('/questions/search', json=test_search)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertIsNotNone(data['questions'])
+        self.assertIsNotNone(data['total_questions'])
+
+    def test_404_search_term(self):
+        test_search = {'searchTerm': ''}
+        res = self.client().post('questions/search', json=test_search)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'Not Found')
 
 
 

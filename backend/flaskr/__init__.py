@@ -117,20 +117,25 @@ def create_app(test_config=None):
   @app.route('/questions', methods=['POST'])
   def create_question():
     body = request.get_json()
+
+    if not ('question' in body and 'answer' in body and 'difficulty' in body and 'category' in body):
+      abort(422)
+
     created_question = body.get('question')
     created_answer = body.get('answer')
     created_category = body.get('category')
     created_difficulty = body.get('difficulty')
 
-    question = Question(question=created_question, answer=created_answer, category=created_category, difficulty=created_difficulty)
-    question.insert()
+    try:
+      question = Question(question=created_question, answer=created_answer, category=created_category, difficulty=created_difficulty)
+      question.insert()
 
-    return jsonify({
-      'response': True,
-      'created': question.id
-    })
+      return jsonify({
+        'success': True,
+        'created': question.id
+      })
 
-    if error:
+    except:
       abort(422)
 
 
@@ -146,7 +151,7 @@ def create_app(test_config=None):
   '''
   @app.route('/questions/search', methods=['POST'])
   def search_question():
-    try:
+    
       body = request.get_json()
       search_term = body.get('searchTerm', None)
       if search_term:
@@ -159,7 +164,7 @@ def create_app(test_config=None):
           'total_questions': len(results),
           'current_category': None
         })
-    except:
+    
       abort(404)
 
   '''
