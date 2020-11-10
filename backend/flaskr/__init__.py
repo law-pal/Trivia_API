@@ -8,6 +8,15 @@ from models import setup_db, Question, Category
 
 QUESTIONS_PER_PAGE = 10
 
+def paginated_questions(request, selection):
+    page = request.args.get('page', 1, type=int)
+    start = (page -1) * QUESTIONS_PER_PAGE
+    end = start + QUESTIONS_PER_PAGE
+    questions = [question.format() for question in selection]
+    formatted_questions = questions[start:end]
+    return formatted_questions
+
+
 def create_app(test_config=None):
   app = Flask(__name__)
   setup_db(app)
@@ -15,8 +24,8 @@ def create_app(test_config=None):
   '''
   @TODO: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
   '''
-  CORS(app)
-  #CORS(app, resources={r'/api/*': {'origins': '*'}})
+  #CORS(app)
+  CORS(app, resources={r'/api/*': {'origins': '*'}})
 
   '''
   @TODO: Use the after_request decorator to set Access-Control-Allow
@@ -58,24 +67,21 @@ def create_app(test_config=None):
   '''
   @app.route('/questions')
   def get_questions():
-    page = request.args.get('page', 1, type=int)
-    start = (page -1) * QUESTIONS_PER_PAGE
-    end = start + QUESTIONS_PER_PAGE
-    questions = Question.query.order_by(Question.id).all()
-    formatted_questions = [question.format() for question in questions]
+    # I had to reformat code because of error while testing I was getting 200 success on a 404 error.
+    selection = Question.query.order_by(Question.id).all()
+    formatted_questions = paginated_questions(request, selection)
     categories = Category.query.order_by(Category.type).all()
 
     if len(formatted_questions) == 0:
-            abort(404)
+      abort(404)
 
     return jsonify({
-      'success ': True,
-      'questions': formatted_questions[start:end],
-      'total_questions': len(questions),
+      'success': True,
+      'questions': formatted_questions,
+      'total_questions': len(selection),
       'categories': {category.id: category.type for category in categories},
       'current_category': None
     })
-
 
   '''
   @TODO: 
@@ -84,17 +90,18 @@ def create_app(test_config=None):
   TEST: When you click the trash icon next to a question, the question will be removed.
   This removal will persist in the database and when you refresh the page. 
   '''
-  @app.route('/questions/<int:question_id>', methods=['DELETE'])
+  @app.route('/questions/<question_id>', methods=['DELETE'])
   def delete_question(question_id):
-    question = Question.query.get(question_id)
-    question.delete()
+    try:
+      question = Question.query.get(question_id)
+      question.delete()
 
-    return jsonify({
-      'response': True,
-      'deleted': question_id
-    })
+      return jsonify({
+        'response': True,
+        'deleted': question_id
+      })
 
-    if error:
+    except:
       abort(422)
 
   '''
